@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from tkinter import filedialog as fd
 import os
 import numpy as np
+from datetime import time
 
 if __name__ == "__main__":
     files = fd.askopenfilenames()
@@ -12,7 +13,13 @@ if __name__ == "__main__":
                           names=["date", "time", "nothing", "trashZ",
                                     "standarized", "trashz", "value"], index_col=False)
 
-        probes = csv.index.tolist()[5000:7500]
+        times = csv["time"].to_list()
+        start_time = times[0]
+        stop_time = times[-1]
+        probes = csv.index.tolist()
+        probes_count = len(probes)
+
+        probes_frame = probes[5000:7500]
         values = csv["value"].tolist()[5000:7500]
         moving_mean = np.append(np.diff(values), 0)
         moving_mean[moving_mean > 10] = 0
@@ -25,8 +32,8 @@ if __name__ == "__main__":
 
         plt.figure(i)
         # plt.subplot(2, 1, 1)
-        plt.plot(probes, values)
-        plt.plot(probes, moving_mean)
+        plt.plot(probes_frame, values)
+        plt.plot(probes_frame, moving_mean)
         plt.legend(["Normal", "Standarized"])
         plt.title(f"{filename}")
         plt.xlabel("Time")
@@ -41,7 +48,7 @@ if __name__ == "__main__":
         x=np.sum(moving_mean)
         moving_mean[moving_mean!=0]=1
         x=x/np.sum(moving_mean)
-        print(x)
+        # print(x)
 
 # =============================================================================
 #         standarized_values = csv["standarized"][5000:7500]
