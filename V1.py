@@ -29,13 +29,13 @@ if __name__ == "__main__":
         plt.plot(probes, moving_mean)
         plt.legend(["Normal", "Standarized"])
         plt.title(f"{filename}")
-        plt.xlabel("Time [ms]")
+        plt.xlabel("Time")
         plt.ylabel("CO2")
 
         # plt.subplot(2, 1, 2)
         # plt.plot(probes, moving_mean)
         # plt.title("Standarized")
-        # plt.xlabel("Time [ms]")
+        # plt.xlabel("Time")
         # plt.ylabel("CO2")
 
         x=np.sum(moving_mean)
