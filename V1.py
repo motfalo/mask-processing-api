@@ -14,29 +14,29 @@ if __name__ == "__main__":
 
         probes = csv.index.tolist()[5000:7500]
         values = csv["value"].tolist()[5000:7500]
-
+        moving_mean = np.append(np.diff(values), 0)
+        moving_mean[moving_mean > 10] = 0
+        moving_mean[moving_mean < -10] = 0
+        moving_mean[moving_mean != 0] = 1
+        moving_mean = np.multiply(moving_mean, values)
+        mean = np.mean(values)
+        moving_mean[moving_mean > mean] = 0
         filename = os.path.basename(file)
 
         plt.figure(i)
-        plt.subplot(2, 1, 1)
+        # plt.subplot(2, 1, 1)
         plt.plot(probes, values)
-        plt.title(f"Normal {filename}")
-        plt.xlabel("Time [ms]")
-        plt.ylabel("CO2")
-
-        moving_mean = np.append(np.diff(values),0)
-        moving_mean[moving_mean>10] =0
-        moving_mean[moving_mean<-10] =0
-        moving_mean[moving_mean!=0] =1
-        moving_mean=np.multiply(moving_mean,values)
-        mean=np.mean(values)
-        moving_mean[moving_mean>mean]=0
-
-        plt.subplot(2, 1, 2)
         plt.plot(probes, moving_mean)
-        plt.title("Standarized")
+        plt.legend(["Normal", "Standarized"])
+        plt.title(f"{filename}")
         plt.xlabel("Time [ms]")
         plt.ylabel("CO2")
+
+        # plt.subplot(2, 1, 2)
+        # plt.plot(probes, moving_mean)
+        # plt.title("Standarized")
+        # plt.xlabel("Time [ms]")
+        # plt.ylabel("CO2")
 
         x=np.sum(moving_mean)
         moving_mean[moving_mean!=0]=1
