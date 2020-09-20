@@ -1,24 +1,16 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May 25 19:30:16 2020
-
-@author: Juliu
-"""
-
-
 import pandas as pd
 import matplotlib.pyplot as plt
 from tkinter import filedialog as fd
 import os
 import numpy as np
+from datetime import time
 from scipy.signal import argrelextrema
 from scipy.interpolate import interp1d
-from scipy.signal import hilbert
+from scipy.signal import hilbert, chirp
+import re
 
 if __name__ == "__main__":
     files = fd.askopenfilenames()
-    graph_elements=np.shape(files)
-    filename=[]
 
     for i, file in enumerate(files, 1):
         csv = pd.read_csv(file, delimiter=" ",
@@ -42,14 +34,14 @@ if __name__ == "__main__":
 # =============================================================================
         
         
-        starting_time,ending_time=100,6100
+        starting_time,ending_time=1000,3200
         probes_frame = probes[starting_time:ending_time]
         func=np.vectorize(lambda x:x/20)
         probes_frame=func(probes_frame)
         
         #initialization of important parameters
         values = csv["value"].tolist()[starting_time:ending_time]
-        filename.append(os.path.basename(file))
+        filename = os.path.basename(file)
 
         #old way of getting minimas
 # =============================================================================
@@ -131,14 +123,19 @@ if __name__ == "__main__":
 #         plt.show()
 # =============================================================================
         
-        fig = plt.figure(1)
+        fig = plt.figure(i)
         ax0 = fig.add_subplot(211)
-        # ax0.plot(newx, values, label='signal')
-        # ax0.plot(newx, amplitude_envelope, label='envelope')
+        ax0.plot(probes_frame, values, label='signal')
+        ax0.plot(probes_frame, amplitude_envelope, label='envelope')
         ax0.plot(probes_frame, newy, label='local_minimas')
         ax0.set_xlabel("time in seconds")
         ax0.set_ylabel("CO2")
         ax0.scatter(interpolated_time_corrected,interpolated_minimas, s=10)
-        ax0.legend(filename)
-        ax0.set_title('porownanie wykresow')
-
+        ax0.legend(["Wartosci surowe", "obwiednia", "krzywa wdechu"])
+        ax0.set_title(f'{filename} \n mean value = {mean},\n local minimas = {min_peak_mean}')
+        ax1 = fig.add_subplot(212)
+        ax1.plot(probes_frame, values, label='signal')
+        ax1.set_xlabel("time in seconds")
+        ax1.legend(["Wartosci surowe", "krzywa wdechu"])
+        ax1.plot(probes_frame, newy, label='local_minimas')
+        
