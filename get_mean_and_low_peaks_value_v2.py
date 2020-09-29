@@ -138,4 +138,4 @@ if __name__ == "__main__":
         ax1.set_xlabel("time in seconds")
         ax1.legend(["Wartosci surowe", "krzywa wdechu"])
         ax1.plot(probes_frame, newy, label='local_minimas')
-        
+        fig.show()
